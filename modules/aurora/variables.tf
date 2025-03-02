@@ -42,6 +42,7 @@ variable "aurora_master_password" {
 variable "aurora_master_username" {
   description = "The master username for the Aurora database"
   type        = string
+  sensitive   = true
 }
 
 # Aurora DB Engine

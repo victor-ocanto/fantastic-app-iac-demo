@@ -1,3 +1,7 @@
+data "vault_generic_secret" "aurora" {
+  path = "kv/fantastic-app-iac-demo/${local.environment}/aurora-db"
+}
+
 module "vpc" {
   source             = "./modules/vpc"
   subnet_count       = var.subnet_count
@@ -33,8 +37,8 @@ module "aurora" {
   aurora_db_bkp_retention = var.backup_retention_period
   aurora_db_deletion_protection = var.deletion_protection
   aurora_db_name = var.aurora_db_name
-  aurora_master_password = "admin123456*"
-  aurora_master_username = "admin"
+  aurora_master_password = data.vault_generic_secret.aurora.data["adminPassword"]
+  aurora_master_username = data.vault_generic_secret.aurora.data["adminUser"]
   aurora_max_capacity = var.aurora_max_capacity
   aurora_min_capacity = var.aurora_min_capacity
   common_tags = local.common_tags
