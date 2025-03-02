@@ -58,3 +58,30 @@ variable "aws_account_id" {
   type = string
   sensitive = true
 }
+
+variable "aurora_db_name" {
+  type = string
+  description = "The name depends on *.auto.tfvars"
+}
+
+variable "skip_final_snapshot" {
+  type = bool
+  description = "This variable depends on *.auto.tfvars"
+}
+
+variable "deletion_protection" {
+  type = bool
+  description = "This variable depends on *.auto.tfvars"
+}
+variable "backup_retention_period" {
+  type = number
+  description = "This variable depends on *.auto.tfvars"
+}
+variable "aurora_min_capacity" {
+  type = number
+  description = "This variable depends on *.auto.tfvars"
+}
+variable "aurora_max_capacity" {
+  type = number
+  description = "This variable depends on *.auto.tfvars"
+}

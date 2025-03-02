@@ -13,11 +13,9 @@ resource "aws_iam_role" "eks_cluster_role" {
     ]
   })
  # Enable CloudWatch Container Insights
-  tags = {
-    Name        = "${var.eks_cluster_name}-eks-cluster"
-    Environment = var.environment
-    ManagedBy   = "Terraform"
-  }
+  tags = merge ({
+    Name        = "${var.eks_cluster_name}-eks-cluster"},
+    var.common_tags)
 }
 
 resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
@@ -42,11 +40,9 @@ resource "aws_iam_role" "eks_node_group_role" {
       }
     ]
   })
-    tags = {
-    Name        = "${var.eks_cluster_name}-eks-cluster"
-    Environment = var.environment
-    ManagedBy   = "Terraform"
-  }
+    tags = merge ({
+    Name        = "${var.eks_cluster_name}-eks-cluster"},
+    var.common_tags)
 }
 
 resource "aws_iam_role_policy_attachment" "node_policies" {
@@ -64,11 +60,9 @@ resource "aws_iam_openid_connect_provider" "eks_iam_openid" {
   client_id_list  = ["sts.amazonaws.com"]
 
   depends_on = [aws_eks_cluster.main]
-  tags = {
-    Name        = "${var.eks_cluster_name}-eks-cluster"
-    Environment = var.environment
-    ManagedBy   = "Terraform"
-  }
+  tags = merge ({
+    Name        = "${var.eks_cluster_name}-eks-cluster"},
+    var.common_tags)
 }
 
 # Security Groups for EKS
@@ -91,11 +85,9 @@ resource "aws_security_group" "eks_cluster" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name        = "${var.eks_cluster_name}-eks-cluster"
-    Environment = var.environment
-    ManagedBy   = "Terraform"
-  }
+  tags = merge ({
+    Name        = "${var.eks_cluster_name}-eks-cluster"},
+    var.common_tags)
 }
 
 # EKS Cluster
@@ -110,12 +102,11 @@ resource "aws_eks_cluster" "main" {
 
   enabled_cluster_log_types = var.enable_logging ? ["api", "audit", "authenticator"] : []
 
-  tags = {
-    Environment = var.environment
+  tags = merge ({
     "aws:eks:cluster-name"  = var.eks_cluster_name
-    "aws:eks:enable-insights" = "true"
-    ManagedBy   = "Terraform"
-  }
+    "aws:eks:enable-insights" = "true"},
+    var.common_tags)
+
     lifecycle {
     ignore_changes = [tags_all, tags]  # Ignore AWS-managed tags
     }
@@ -145,9 +136,7 @@ resource "aws_eks_node_group" "main" {
   instance_types = var.worker_instance_types
   ami_type       = var.worker_ami_type
 
-  tags = {
-    Name        = "${var.eks_cluster_name}-eks-cluster"
-    Environment = var.environment
-    ManagedBy   = "Terraform"
-  }
+  tags = merge ({
+    Name        = "${var.eks_cluster_name}-eks-cluster"},
+    var.common_tags)
 }
