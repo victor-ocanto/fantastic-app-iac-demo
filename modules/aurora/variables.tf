@@ -5,33 +5,18 @@ variable "region" {
   type        = string
 }
 
-
 # Common tags to apply to resources
 variable "common_tags" {
   description = "Common tags to be applied to all resources"
   type        = map(string)
 }
 
-# Private Subnet CIDR blocks (you can extend this if needed)
-variable "private_subnet_cidrs" {
-  description = "CIDR blocks for private subnets"
-  type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]  # Adjust as needed
-}
-
-# VPC endpoint security group
-variable "rds_endpoint_sg" {
-  description = "Security Group for RDS VPC Endpoint"
-  type        = string
-  default     = "sg-12345678"  # Replace with your security group ID
-}
-
 variable "environment" {
-  description = "Environment for resource tagging"
+  description = "Environment for resource tagging, set on *.auto.tfvars"
   type        = string
 }
 
-# Aurora DB Master Password (best to handle securely)
+# Aurora DB Master Password 
 variable "aurora_master_password" {
   description = "The master password for the Aurora database"
   type        = string
@@ -64,12 +49,13 @@ variable "aurora_db_name" {
   description = "Data Base name for Aurora"
   type        = string 
 }
+
 # Aurora DB name deletion protection
 variable "aurora_db_deletion_protection" {
   description = "deletion protection of Aurora DB"
   type        = string 
 }
-# Aurora DB name deletion protection
+# Aurora DB backup retention
 variable "aurora_db_bkp_retention" {
   description = "backup retention period in days"
   type        = string 
@@ -79,13 +65,13 @@ variable "aurora_db_bkp_retention" {
 variable "aurora_min_capacity" {
   description = "Minimum Aurora capacity unit"
   type        = number
-  default     = 0.5  # Adjust as needed
+  default     = 0.5 
 }
 
 variable "aurora_max_capacity" {
   description = "Maximum Aurora capacity unit"
   type        = number
-  default     = 4  # Adjust as needed
+  default     = 4
 }
 
 variable "vpc_id" {
@@ -103,4 +89,30 @@ variable "skip_final_snapshot" {
   description = "skip final snapshot when deleting the DB"
 }
 
+variable "private_subnet_cidrs" {
+  type        = map(string) 
+  description = "Map of availability zones to private subnet CIDR blocks"
+}
 
+variable "aurora_storage_type" {
+  description = "The storage type for the Aurora cluster"
+  type        = string
+}
+
+variable "instance_class" {
+  description = "The instance class for the Aurora cluster"
+  type        = string
+}
+variable "iam_db_auth_enabled" {
+  type = bool
+  description = "Whether to enable IAM database authentication for the Aurora cluster"
+}
+variable "performance_insights_enabled" {
+  description = "Whether to enable Performance Insights for the Aurora cluster"
+  type        = bool
+}
+
+variable "availability_zones" {
+  type        = list(string)
+  description = "A list of availability zones to distribute resources across for high availability."
+}

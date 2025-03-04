@@ -75,7 +75,7 @@ resource "aws_security_group" "eks_cluster" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.ip_whitelist
   }
 
   egress {
@@ -140,3 +140,42 @@ resource "aws_eks_node_group" "main" {
     Name        = "${var.eks_cluster_name}-eks-cluster"},
     var.common_tags)
 }
+resource "tls_private_key" "self_signed_cert" {
+  algorithm = "RSA"
+}
+
+resource "tls_self_signed_cert" "self_signed_cert" {
+  #key_algorithm   = "RSA"
+  private_key_pem = tls_private_key.self_signed_cert.private_key_pem
+
+  subject {
+    common_name  = "${var.environment}.${var.app_name}.com"
+    organization = "ACME, Inc"
+  }
+
+  validity_period_hours = 12
+
+  allowed_uses = [
+    "key_encipherment",
+    "digital_signature",
+    "server_auth",
+  ]
+}
+
+resource "aws_acm_certificate" "cert" {
+  private_key      = tls_private_key.self_signed_cert.private_key_pem
+  certificate_body = tls_self_signed_cert.self_signed_cert.cert_pem
+}
+
+/*
+# Import the certificate into AWS ACM
+resource "aws_acm_certificate" "self_signed_cert" {
+  provider          = aws
+  private_key       = var.key
+  certificate_body  = var.key
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+*/

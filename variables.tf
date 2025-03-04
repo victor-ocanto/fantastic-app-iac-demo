@@ -1,21 +1,16 @@
-variable "enable_nat_gateway" {
-  default = true
-}
-
 variable "region" {
   default = "us-east-1"
+  description = "AWS region"
 }
 
 variable "vpc_cidr" {
   default = "10.0.0.0/16"
-}
-
-variable "subnet_count" {
-  default = 3
+  description = "Main VPC cidr"
 }
 
 variable "availability_zones" {
-  default = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  type = list(string)
+  description = "AWS Zones used for eks high availability"
 }
 
 variable "eks_scaling_config" {
@@ -24,16 +19,11 @@ variable "eks_scaling_config" {
     max_size      = number
     min_size      = number
   })
-  default = {
-    desired_size  = 1
-    max_size      = 1
-    min_size      = 1
-  }
+  description = "EKS Scaling config"
 }
 
 variable "instance_types" {
   type        = list(string)
-  default     = ["t3.small"]
 }
 
 variable "ami_type" {
@@ -45,7 +35,9 @@ variable "eks_node_policies" {
   default = [
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+    "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess",
+    "arn:aws:iam::aws:policy/AWSCertificateManagerReadOnly"
   ]
 }
 variable "eks_cluster_policies" {
@@ -84,4 +76,22 @@ variable "aurora_min_capacity" {
 variable "aurora_max_capacity" {
   type = number
   description = "This variable depends on *.auto.tfvars"
+}
+
+variable "aurora_storage_type" {
+  description = "The storage type for the Aurora cluster"
+  type        = string
+}
+
+variable "instance_class" {
+  description = "The instance class for the Aurora cluster"
+  type        = string
+}
+variable "iam_db_auth_enabled" {
+  type = bool
+  description = "Whether to enable IAM database authentication for the Aurora cluster"
+}
+variable "performance_insights_enabled" {
+  description = "Whether to enable Performance Insights for the Aurora cluster"
+  type        = bool
 }

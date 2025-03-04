@@ -21,3 +21,6 @@ data "aws_eks_cluster" "eks" {
 output "oidc_provider" {
   value = replace(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://", "")
 }
+output "certificate_arn" {
+  value = aws_acm_certificate.cert.arn
+}

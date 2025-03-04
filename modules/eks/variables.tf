@@ -67,3 +67,14 @@ variable "common_tags" {
   type        = map(string)
   description = "Common tags to apply to all resources. These tags are defined in the locals.tf file."
 }
+
+variable "app_name" {
+  type = string
+  description = "Application name"
+  
+}
+
+variable "ip_whitelist" {
+  type = list(string)
+  description = "list of IP that will be allowed to access to EKS API."
+}

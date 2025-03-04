@@ -19,7 +19,7 @@ resource "aws_subnet" "public" {
  tags = merge({
    Name =  "Public-Subnet-${each.key}-${var.environment}"},
     var.common_tags)
-}
+}/*
 resource "aws_subnet" "private" {
   for_each          = {for i, az in var.availability_zones : az => i}
   vpc_id            = aws_vpc.main.id
@@ -28,7 +28,19 @@ resource "aws_subnet" "private" {
   tags = merge({
     Name = "Private-Subnet-${each.key}-${var.environment}"},
     var.common_tags)
+}*/
+
+resource "aws_subnet" "private" {
+  for_each          = var.private_subnet_cidrs
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = each.value
+  availability_zone = each.key
+  
+  tags = merge({
+    Name = "Private-Subnet-${each.key}-${var.environment}"
+  }, var.common_tags)
 }
+
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
   tags = merge({

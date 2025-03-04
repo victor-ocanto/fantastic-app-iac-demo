@@ -8,11 +8,6 @@ variable "vpc_cidr" {
   description = "The CIDR block for the VPC."
 }
 
-variable "subnet_count" {
-  type        = number
-  description = "The number of subnets to create per availability zone."
-}
-
 variable "availability_zones" {
   type        = list(string)
   description = "List of availability zones to use for subnets."
@@ -26,4 +21,9 @@ variable "environment" {
 variable "common_tags" {
   type        = map(string)
   description = "Common tags to apply to all resources. It is defined on locals.tf"
+}
+
+variable "private_subnet_cidrs" {
+  type        = map(string) 
+  description = "Map of availability zones to private subnet CIDR blocks"
 }
